@@ -172,21 +172,17 @@ export function ContactModal({
                 >
                   Close
                 </button>
-                <motion.button
-                  type="button"
+                <motion.a
+                  href="https://wa.me/94740361590?text=Hello%20Hirusha%20%26%20Nevith%2C%20I%20would%20like%20to%20inquire%20about%20a%20private%20safari%20at%20Yala%20National%20Park."
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={() => {
-                    onClose();
-                    onOpenWhatsAppConcierge(
-                      'Hello Hirusha & Nevith, I would like to inquire about a private safari at Yala National Park.'
-                    );
-                  }}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-jungle-charcoal text-on-jungle-charcoal font-label text-[14px] font-semibold hover:bg-charcoal-elevated transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4 text-leopard-amber" aria-hidden="true" />
-                  <span>Message on WhatsApp</span>
-                </motion.button>
+                  <span>WhatsApp 074 036 1590</span>
+                </motion.a>
               </div>
             </div>
           </motion.div>

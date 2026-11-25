@@ -66,6 +66,13 @@ export interface Testimonial {
   packageName: string;
 }
 
+export const OWNER_WHATSAPP_NUMBER = '94740361590';
+export const OWNER_WHATSAPP_DISPLAY = '074 036 1590';
+
+export function buildWhatsAppUrl(message: string): string {
+  return `https://wa.me/${OWNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
 export const HERO_IMAGE = heroLeopardRock;
 
 export const JEEP_COLLAGE_MAIN_IMAGE = jeepCollageMain;

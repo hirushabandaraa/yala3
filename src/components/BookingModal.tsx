@@ -1,10 +1,12 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { X, CheckCircle2, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
+import { X, CheckCircle2, ChevronDown, MessageCircle, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   MODAL_BACKDROP_IMAGE,
   SAFARI_PACKAGES,
   SafariPackage,
+  OWNER_WHATSAPP_DISPLAY,
+  buildWhatsAppUrl,
 } from '../data/safariData';
 import { ResilientImage } from './ResilientImage';
 
@@ -35,11 +37,19 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
   const [hotelPickup, setHotelPickup] = useState('Wild Coast Tented Lodge, Palatupana');
   const [gimbalMount, setGimbalMount] = useState(true);
   const [vegetarianPicnic, setVegetarianPicnic] = useState(false);
-  const [confirmedRef, setConfirmedRef] = useState<string | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<{
+    ref: string;
+    waUrl: string;
+    messageText: string;
+  } | null>(null);
+  const [copiedDetails, setCopiedDetails] = useState(false);
+
+  const hiddenWaLinkRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
-    setConfirmedRef(null);
+    setConfirmedBooking(null);
+    setCopiedDetails(false);
     const targetPkgId = prefill?.packageId || 'full-day';
     setPackageId(targetPkgId);
     const pkg = SAFARI_PACKAGES.find((p) => p.id === targetPkgId) || SAFARI_PACKAGES[1];
@@ -85,7 +95,44 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const randomCode = Math.floor(1000 + Math.random() * 9000);
-    setConfirmedRef(`LY-2026-${randomCode}`);
+    const ref = `LY-2026-${randomCode}`;
+
+    const preferences: string[] = [];
+    if (gimbalMount) preferences.push('Gimbal & Beanbag Camera Mount');
+    if (vegetarianPicnic) preferences.push('Vegetarian Bush Picnic Menu');
+
+    const messageText = [
+      `*New Safari Booking Request — Leapordsee Yala*`,
+      `Booking Ref: ${ref}`,
+      `Package: ${activePackage.title} ($${activePackage.price})`,
+      `Date: ${date}`,
+      `Departure: ${departureTime}`,
+      `Guests: ${guests}`,
+      `Guest Name: ${fullName}`,
+      `Guest Contact: ${contact}`,
+      `Hotel Pickup: ${hotelPickup}`,
+      `Preferences: ${preferences.length > 0 ? preferences.join(', ') : 'Standard'}`,
+    ].join('\n');
+
+    const waUrl = buildWhatsAppUrl(messageText);
+    setConfirmedBooking({ ref, waUrl, messageText });
+
+    // Trigger direct WhatsApp handoff from the user's submit click
+    if (hiddenWaLinkRef.current) {
+      hiddenWaLinkRef.current.href = waUrl;
+      hiddenWaLinkRef.current.click();
+    }
+  };
+
+  const handleCopyBooking = async () => {
+    if (!confirmedBooking) return;
+    try {
+      await navigator.clipboard.writeText(confirmedBooking.messageText);
+      setCopiedDetails(true);
+      window.setTimeout(() => setCopiedDetails(false), 2000);
+    } catch {
+      setCopiedDetails(true);
+    }
   };
 
   return (
@@ -114,6 +161,19 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
 
           {/* Backdrop click target */}
           <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+
+          {/* Hidden anchor for synchronous WhatsApp launch on booking confirmation */}
+          <a
+            ref={hiddenWaLinkRef}
+            href={confirmedBooking?.waUrl || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden"
+            aria-hidden="true"
+            tabIndex={-1}
+          >
+            Open WhatsApp
+          </a>
 
           {/* Centered Booking Modal */}
           <motion.div
@@ -362,25 +422,59 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
               </footer>
 
               <AnimatePresence>
-                {confirmedRef && (
+                {confirmedBooking && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.22, ease: EASE_OUT }}
-                    className="rounded bg-sage-tint border border-sage-green/30 p-4 flex items-start gap-2.5 text-sage-green"
+                    className="rounded-lg bg-sage-tint border border-sage-green/35 p-4 flex flex-col gap-3 text-sage-green"
                   >
-                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
-                    <div className="flex flex-col gap-0.5 font-body text-[13px] leading-[20px]">
-                      <p className="font-semibold">
-                        Request confirmed (<span className="tabular-nums">{confirmedRef}</span>)!
-                      </p>
-                      <p>
-                        Your assigned tracker will message{' '}
-                        <span className="font-medium">{contact}</span> with Palatupana gate
-                        coordinates for <span className="tabular-nums">{date}</span> (
-                        {activePackage.title}).
-                      </p>
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                      <div className="flex flex-col gap-0.5 font-body text-[13px] leading-[20px]">
+                        <p className="font-semibold">
+                          Booking request prepared (
+                          <span className="tabular-nums">{confirmedBooking.ref}</span>)!
+                        </p>
+                        <p>
+                          Sending directly to Hirusha on WhatsApp (
+                          <span className="font-semibold tabular-nums">
+                            {OWNER_WHATSAPP_DISPLAY}
+                          </span>
+                          ). If WhatsApp did not open automatically, click below to send your booking details.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 pl-6">
+                      <a
+                        href={confirmedBooking.waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded bg-jungle-charcoal text-on-jungle-charcoal font-label text-[12px] font-semibold hover:bg-charcoal-elevated transition-colors"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5 text-leopard-amber" aria-hidden="true" />
+                        <span>Send via WhatsApp ({OWNER_WHATSAPP_DISPLAY})</span>
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={handleCopyBooking}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-sage-green/40 bg-sand-elevated text-sage-green font-label text-[12px] font-semibold hover:bg-warm-sand transition-colors cursor-pointer"
+                      >
+                        {copiedDetails ? (
+                          <>
+                            <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>Copy Details</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   </motion.div>
                 )}

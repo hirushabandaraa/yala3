@@ -1,6 +1,7 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { X, MessageCircle, Send, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { OWNER_WHATSAPP_DISPLAY, buildWhatsAppUrl } from '../data/safariData';
 
 interface WhatsAppConciergeModalProps {
   isOpen: boolean;
@@ -19,11 +20,12 @@ export function WhatsAppConciergeModal({
   const [message, setMessage] = useState(
     'Hello Leapordsee Yala, I would like to check private 4x4 jeep availability for Yala Block 1.'
   );
-  const [sent, setSent] = useState(false);
+  const [dispatchedUrl, setDispatchedUrl] = useState<string | null>(null);
+  const hiddenWaRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
-    setSent(false);
+    setDispatchedUrl(null);
     if (initialMessage) {
       setMessage(initialMessage);
     }
@@ -41,7 +43,19 @@ export function WhatsAppConciergeModal({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
-    setSent(true);
+    const fullText = [
+      `*Leapordsee Yala Safari Inquiry*`,
+      `From: ${guestContact || 'Website Guest'}`,
+      ``,
+      message,
+    ].join('\n');
+    const waUrl = buildWhatsAppUrl(fullText);
+    setDispatchedUrl(waUrl);
+
+    if (hiddenWaRef.current) {
+      hiddenWaRef.current.href = waUrl;
+      hiddenWaRef.current.click();
+    }
   };
 
   return (
@@ -58,6 +72,18 @@ export function WhatsAppConciergeModal({
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-jungle-charcoal/80 backdrop-blur-md"
           onClick={onClose}
         >
+          <a
+            ref={hiddenWaRef}
+            href={dispatchedUrl || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden"
+            aria-hidden="true"
+            tabIndex={-1}
+          >
+            Open WhatsApp
+          </a>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -76,8 +102,8 @@ export function WhatsAppConciergeModal({
                   >
                     Tracker WhatsApp Desk
                   </h2>
-                  <p className="font-body text-[12px] leading-[16px] text-text-muted-dark">
-                    Direct line · Palatupana Basecamp (+94 77 412 8900)
+                  <p className="font-body text-[12px] leading-[16px] text-text-muted-dark tabular-nums">
+                    Direct line · Palatupana Basecamp ({OWNER_WHATSAPP_DISPLAY})
                   </p>
                 </div>
               </div>
@@ -135,24 +161,35 @@ export function WhatsAppConciergeModal({
                   whileTap={{ scale: 0.97 }}
                   className="inline-flex items-center gap-2 px-6 py-2.5 rounded bg-leopard-amber text-on-leopard-amber font-label text-[14px] font-semibold hover:bg-amber-hover transition-colors cursor-pointer"
                 >
-                  <span>Send to Tracker</span>
+                  <span>Send to WhatsApp</span>
                   <Send className="w-4 h-4" aria-hidden="true" />
                 </motion.button>
               </div>
 
               <AnimatePresence>
-                {sent && (
+                {dispatchedUrl && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.2, ease: EASE_OUT }}
-                    className="rounded bg-sage-tint border border-sage-green/30 p-3 flex items-center gap-2 text-sage-green"
+                    className="rounded bg-sage-tint border border-sage-green/30 p-3 flex flex-col gap-2 text-sage-green"
                   >
-                    <CheckCircle2 className="w-4 h-4 shrink-0" aria-hidden="true" />
-                    <p className="font-body text-[13px] leading-[20px]">
-                      Message dispatched to our Palatupana basecamp desk. Expect a WhatsApp reply within 15 minutes.
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" aria-hidden="true" />
+                      <p className="font-body text-[13px] leading-[20px]">
+                        Ready to send to Hirusha ({OWNER_WHATSAPP_DISPLAY}) on WhatsApp.
+                      </p>
+                    </div>
+                    <a
+                      href={dispatchedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex w-fit items-center gap-1.5 px-3 py-1.5 rounded bg-jungle-charcoal text-on-jungle-charcoal font-label text-[12px] font-semibold hover:bg-charcoal-elevated transition-colors"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-leopard-amber" aria-hidden="true" />
+                      <span>Open WhatsApp Chat</span>
+                    </a>
                   </motion.div>
                 )}
               </AnimatePresence>
