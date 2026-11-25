@@ -1,0 +1,258 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safari Booking Modal — Leapordsee Yala</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config" data-stitch-original-src="46e9ec1be6da5698===../../tailwind.config.js">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'leopard-amber': '#D99B26',
+        'on-leopard-amber': '#141815',
+        'amber-hover': '#C08508',
+        'amber-tint': '#FFEEDA',
+        'jungle-charcoal': '#141815',
+        'on-jungle-charcoal': '#F7F5F0',
+        'charcoal-elevated': '#1E2420',
+        'on-charcoal-elevated': '#F7F5F0',
+        'charcoal-muted': '#2D342F',
+        'warm-sand': '#F7F5F0',
+        'on-warm-sand': '#141815',
+        'sand-elevated': '#FFFFFF',
+        'on-sand-elevated': '#141815',
+        'sand-muted': '#E8E3D9',
+        'sage-green': '#4A5D4E',
+        'on-sage-green': '#F7F5F0',
+        'sage-tint': '#E1F6E3',
+        'text-muted-dark': '#B5BCB6',
+        'text-muted-light': '#4F5951',
+        'error': '#BA1A1A',
+        'on-error': '#FFFFFF',
+      },
+      borderRadius: {
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section-sm': '48px',
+        'section-lg': '96px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Playfair Display"', 'sans-serif'],
+        'headline': ['"Playfair Display"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-xl': ['64px', { lineHeight: '72px', letterSpacing: '-1px', fontWeight: '700' }],
+        'display-xl-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'display-lg-mobile': ['30px', { lineHeight: '36px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-lg': ['36px', { lineHeight: '44px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-lg-mobile': ['26px', { lineHeight: '32px', letterSpacing: '0px', fontWeight: '600' }],
+        'headline-md': ['28px', { lineHeight: '36px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-lg': ['20px', { lineHeight: '28px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['17px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-lg': ['16px', { lineHeight: '26px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '20px', letterSpacing: '0.1px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.6px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '16px', letterSpacing: '0.5px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+        'image-zoom': '350ms',
+        'surface-enter': '250ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'image-zoom': '0ms',
+        'surface-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'image-zoom': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-jungle-charcoal text-on-jungle-charcoal font-body antialiased selection:bg-leopard-amber selection:text-on-leopard-amber">
+  <div class="relative min-h-screen flex items-center justify-center p-gutter-lg md:p-gutter-xl overflow-hidden">
+    <!-- Dimmed Hero/Package Backdrop -->
+    <img src="https://lh3.googleusercontent.com/aida/ALJJyrA3GRl91GfOswvCOln9yMuDpJA0kBP3Y8g7QWpmjmBUHhfhYlkDvW1uy1Pxebm8JARs1IHnl7eXInuLuBjpY4BwdjhfzUljRR092uZ6PI7ygUxQoQy9VOLGzq6aIUoxRxKIra70vPAhWvq5KLNVcWS7fq4fiADvjLCGgaaVTkNj97KdCCokbgT4idvzlV_UV-y99RH4Ata1fHBO2XPio2lAPgmRiq5Gi7APWrP__cbcH1JkNijdLU-LuOCGIpID" alt="Yala National Park safari backdrop" class="absolute inset-0 w-full h-full object-cover opacity-25" data-stitch-original-src="20cab4cead692d18===../../images/pkg_fullday_tracker.jpg">
+    <div class="absolute inset-0 bg-jungle-charcoal/80 backdrop-blur-md"></div>
+
+    <!-- Centered Booking Modal -->
+    <div role="dialog" aria-modal="true" aria-labelledby="safari-modal-heading" class="relative z-10 w-full max-w-2xl rounded-lg bg-warm-sand text-on-warm-sand border border-sand-muted overflow-hidden">
+      <!-- Modal Header -->
+      <header class="bg-jungle-charcoal text-on-jungle-charcoal px-gutter-lg py-gutter-lg flex items-center justify-between gap-gutter-md">
+        <div class="flex flex-col gap-gutter-xs">
+          <span data-design-text-token="label-md" class="font-label text-label-md text-leopard-amber uppercase tracking-widest">Private Jeep Charter</span>
+          <h1 id="safari-modal-heading" data-design-text-token="headline-lg" class="font-headline text-headline-lg-mobile md:text-headline-lg text-on-jungle-charcoal">
+            Reserve Your Safari
+          </h1>
+        </div>
+        <a href="../package-detail/FullDayLeopardTracker.html" data-component-id="button-icon" data-component-type="button" data-component-variant="icon" aria-label="Close booking modal" class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-charcoal-muted bg-charcoal-elevated text-on-charcoal-elevated hover:border-leopard-amber transition-colors duration-state-change ease-state-change">
+          <span class="material-symbols-outlined text-title-md">close</span>
+        </a>
+      </header>
+
+      <!-- Modal Form Body -->
+      <form id="modal-booking-form" class="p-gutter-lg flex flex-col gap-gutter-lg">
+        <!-- Package & Date -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md">
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Safari Package</span>
+            <select name="package" class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+              <option value="290">Full-Day Leopard Tracker ($290)</option>
+              <option value="145">Golden Hour Morning Safari ($145)</option>
+              <option value="140">Sunset &amp; Dusk Wilderness Drive ($140)</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Preferred Date</span>
+            <input type="date" name="date" value="2026-12-14" required class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+          </label>
+        </div>
+
+        <!-- Time & Guests -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md">
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Departure Time</span>
+            <select name="time" class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+              <option>5:30 AM (Full Day / Morning)</option>
+              <option>2:30 PM (Sunset &amp; Dusk)</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Guests</span>
+            <select name="guests" class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+              <option>2 Guests (Private 4x4 Jeep)</option>
+              <option>1 Guest (Solo Tracker)</option>
+              <option>3–4 Guests (Private 4x4 Jeep)</option>
+              <option>5–6 Guests (Extended 4x4)</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Guest Contact & Pickup -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md">
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Full Name</span>
+            <input type="text" value="Clara Vance" required class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+          </label>
+
+          <label class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">WhatsApp or Email</span>
+            <input type="text" value="+44 7700 900123" required class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+          </label>
+        </div>
+
+        <label class="flex flex-col gap-gutter-xs">
+          <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Tissamaharama / Yala Hotel Pickup</span>
+          <input type="text" value="Wild Coast Tented Lodge, Palatupana" required class="w-full rounded bg-sand-elevated border border-sand-muted px-3 py-2.5 text-body-md text-on-sand-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none">
+        </label>
+
+        <!-- Complimentary Gear & Dietary Options -->
+        <div class="flex flex-col gap-gutter-sm">
+          <span data-design-text-token="label-md" class="font-label text-label-md text-text-muted-light uppercase">Complimentary Preferences</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter-sm">
+            <label class="flex items-center gap-gutter-sm p-3 rounded bg-sand-elevated border border-sand-muted cursor-pointer">
+              <input type="checkbox" checked class="rounded border-sage-green text-leopard-amber focus:ring-leopard-amber">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-sand-elevated">Gimbal &amp; Beanbag Camera Mount</span>
+            </label>
+            <label class="flex items-center gap-gutter-sm p-3 rounded bg-sand-elevated border border-sand-muted cursor-pointer">
+              <input type="checkbox" class="rounded border-sage-green text-leopard-amber focus:ring-leopard-amber">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-sand-elevated">Vegetarian Bush Picnic Menu</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Summary Bar -->
+        <div class="rounded-lg bg-sand-muted p-gutter-md flex items-center justify-between gap-gutter-md">
+          <div class="flex flex-col">
+            <span data-design-text-token="title-md" class="font-title text-title-md text-on-warm-sand">Total Private Jeep Charter</span>
+            <span data-design-text-token="body-sm" class="font-body text-body-sm text-text-muted-light">No prepayment required today · Free 48h cancellation</span>
+          </div>
+          <span id="modal-total" data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-warm-sand tabular-nums">$290</span>
+        </div>
+
+        <!-- Modal Actions -->
+        <footer class="flex flex-col sm:flex-row items-center justify-end gap-gutter-md pt-gutter-xs">
+          <a href="../package-detail/FullDayLeopardTracker.html" data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" class="w-full sm:w-auto inline-flex items-center justify-center px-gutter-lg py-3 rounded border border-sage-green text-on-warm-sand font-label text-label-lg hover:bg-sage-green hover:text-on-sage-green transition-colors duration-state-change ease-state-change">
+            <span data-design-text-token="label-lg">Cancel</span>
+          </a>
+          <button type="submit" data-component-id="button-primary" data-component-type="button" data-component-variant="primary" class="w-full sm:w-auto inline-flex items-center justify-center gap-gutter-sm px-gutter-xl py-3 rounded bg-leopard-amber text-on-leopard-amber font-label text-label-lg hover:bg-amber-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leopard-amber transition-colors duration-state-change ease-state-change">
+            <span data-design-text-token="label-lg">Confirm Safari Request</span>
+            <span class="material-symbols-outlined text-title-md" aria-hidden="true">check_circle</span>
+          </button>
+        </footer>
+
+        <div id="booking-confirmed" class="hidden rounded bg-sage-tint border border-sage-green/30 p-gutter-md flex items-center gap-gutter-sm text-sage-green">
+          <span class="material-symbols-outlined text-title-md">check_circle</span>
+          <p data-design-text-token="body-sm" class="font-body text-body-sm">Request confirmed! Your assigned tracker will send gate coordinates via WhatsApp.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('modal-booking-form');
+      var pkgSelect = form ? form.elements['package'] : null;
+      var totalEl = document.getElementById('modal-total');
+      var confirmedEl = document.getElementById('booking-confirmed');
+
+      if (pkgSelect && totalEl) {
+        pkgSelect.addEventListener('change', function () {
+          totalEl.textContent = '$' + pkgSelect.value;
+        });
+      }
+
+      if (form && confirmedEl) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          confirmedEl.classList.remove('hidden');
+        });
+      }
+    })();
+  </script>
+
+
+</body></html>

@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-leopard-amber: #D99B26;
+  --color-on-leopard-amber: #141815;
+  --color-amber-hover: #C08508;
+  --color-amber-tint: #FFEEDA;
+  --color-jungle-charcoal: #141815;
+  --color-on-jungle-charcoal: #F7F5F0;
+  --color-charcoal-elevated: #1E2420;
+  --color-on-charcoal-elevated: #F7F5F0;
+  --color-charcoal-muted: #2D342F;
+  --color-warm-sand: #F7F5F0;
+  --color-on-warm-sand: #141815;
+  --color-sand-elevated: #FFFFFF;
+  --color-on-sand-elevated: #141815;
+  --color-sand-muted: #E8E3D9;
+  --color-sage-green: #4A5D4E;
+  --color-on-sage-green: #F7F5F0;
+  --color-sage-tint: #E1F6E3;
+  --color-text-muted-dark: #B5BCB6;
+  --color-text-muted-light: #4F5951;
+  --color-error: #BA1A1A;
+  --color-on-error: #FFFFFF;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-headline: "Playfair Display", Georgia, serif;
+  --font-title: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-label: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --spacing-gutter-xs: 4px;
+  --spacing-gutter-sm: 8px;
+  --spacing-gutter-md: 16px;
+  --spacing-gutter-lg: 24px;
+  --spacing-gutter-xl: 32px;
+  --spacing-section-sm: 48px;
+  --spacing-section-lg: 96px;
+  --spacing-page-margin: 32px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  /* Ensure date input calendar indicator fits dark/light surfaces cleanly */
+  .input-dark-scheme {
+    color-scheme: dark;
+  }
+
+  .input-light-scheme {
+    color-scheme: light;
+  }
+}
