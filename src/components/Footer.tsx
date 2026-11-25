@@ -1,13 +1,21 @@
 import { useState, FormEvent } from 'react';
-import { MapPin, Mail, MessageCircle } from 'lucide-react';
-import { BrandMark } from './BrandMark';
+import { MapPin, Mail, MessageCircle, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { BrandMark, BrandWordmark } from './BrandMark';
 
 interface FooterProps {
   onNavigateSection: (sectionId: string) => void;
   onOpenWhatsAppConcierge: () => void;
+  onOpenContact: () => void;
 }
 
-export function Footer({ onNavigateSection, onOpenWhatsAppConcierge }: FooterProps) {
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
+export function Footer({
+  onNavigateSection,
+  onOpenWhatsAppConcierge,
+  onOpenContact,
+}: FooterProps) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -25,27 +33,44 @@ export function Footer({ onNavigateSection, onOpenWhatsAppConcierge }: FooterPro
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-charcoal-muted">
-          {/* Brand + WhatsApp Direct Booking */}
+          {/* Brand + Direct Contact & WhatsApp Booking */}
           <div className="md:col-span-4 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <BrandMark className="w-7 h-7 text-leopard-amber shrink-0" />
-              <span className="font-headline text-[20px] leading-[28px] font-semibold text-on-jungle-charcoal">
-                Leapordsee Yala
-              </span>
+              <BrandWordmark className="font-headline text-[20px] leading-[28px] font-semibold text-on-jungle-charcoal" />
             </div>
             <p className="font-body text-[13px] leading-[20px] tracking-[0.1px] text-text-muted-dark max-w-xs text-pretty">
               Private eco-luxury jeep safaris and ethical leopard tracking across Yala National Park, Sri Lanka.
             </p>
-            <button
-              type="button"
-              onClick={onOpenWhatsAppConcierge}
-              className="inline-flex w-fit items-center gap-2 px-4 py-2 rounded-full bg-charcoal-elevated border border-sage-green/60 hover:border-leopard-amber transition-colors duration-150 ease-out cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-leopard-amber" aria-hidden="true" />
-              <span className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-on-charcoal-elevated">
-                WhatsApp Direct Booking
-              </span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
+                onClick={onOpenContact}
+                className="inline-flex w-fit items-center gap-2 px-4 py-2 rounded-full bg-leopard-amber text-on-leopard-amber hover:bg-amber-hover transition-colors duration-150 ease-out cursor-pointer"
+              >
+                <Phone className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="font-label text-[12px] leading-[16px] tracking-[0.4px] font-semibold">
+                  Contact Us
+                </span>
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
+                onClick={onOpenWhatsAppConcierge}
+                className="inline-flex w-fit items-center gap-2 px-4 py-2 rounded-full bg-charcoal-elevated border border-sage-green/60 hover:border-leopard-amber transition-colors duration-150 ease-out cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4 text-leopard-amber" aria-hidden="true" />
+                <span className="font-label text-[12px] leading-[16px] tracking-[0.4px] font-semibold text-on-charcoal-elevated">
+                  WhatsApp Desk
+                </span>
+              </motion.button>
+            </div>
           </div>
 
           {/* Explore */}
@@ -90,16 +115,43 @@ export function Footer({ onNavigateSection, onOpenWhatsAppConcierge }: FooterPro
                   About Us
                 </button>
               </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={onOpenContact}
+                  className="font-body text-[13px] leading-[20px] text-text-muted-dark hover:text-on-jungle-charcoal transition-colors duration-150 cursor-pointer"
+                >
+                  Contact Us
+                </button>
+              </li>
             </ul>
           </div>
 
-          {/* Basecamp */}
+          {/* Basecamp & Direct Contacts */}
           <div className="md:col-span-3 flex flex-col gap-4">
             <h3 className="font-label text-[12px] leading-[16px] font-semibold text-leopard-amber uppercase tracking-widest">
-              Basecamp
+              Contact Us
             </h3>
             <div className="flex flex-col gap-2 text-[13px] leading-[20px] text-text-muted-dark">
-              <div className="flex items-start gap-2">
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-leopard-amber shrink-0" aria-hidden="true" />
+                <a
+                  href="tel:+94740361590"
+                  className="hover:text-on-jungle-charcoal transition-colors tabular-nums"
+                >
+                  Hirusha - 074 036 1590
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-leopard-amber shrink-0" aria-hidden="true" />
+                <a
+                  href="tel:+94769008795"
+                  className="hover:text-on-jungle-charcoal transition-colors tabular-nums"
+                >
+                  Nevith - 076 900 8795
+                </a>
+              </div>
+              <div className="flex items-start gap-2 pt-1">
                 <MapPin className="w-4 h-4 text-sage-green shrink-0 mt-0.5" aria-hidden="true" />
                 <span>Palatupana Road, Tissamaharama 82600, Yala National Park, Sri Lanka</span>
               </div>
@@ -183,17 +235,28 @@ export function Footer({ onNavigateSection, onOpenWhatsAppConcierge }: FooterPro
                   className="w-full rounded bg-charcoal-elevated border border-charcoal-muted px-4 py-2.5 text-[13px] leading-[20px] text-on-charcoal-elevated placeholder:text-text-muted-dark/60 focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none transition-colors duration-150 ease-out"
                 />
               </label>
-              <button
+              <motion.button
                 type="submit"
+                whileHover={{ scale: 1.015 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
                 className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded bg-leopard-amber text-on-leopard-amber font-label text-[14px] leading-[20px] tracking-[0.2px] font-semibold hover:bg-amber-hover transition-colors duration-150 ease-out cursor-pointer"
               >
                 <span>Subscribe</span>
-              </button>
-              {subscribed && (
-                <p className="font-body text-[13px] leading-[20px] text-leopard-amber">
-                  Subscribed to Yala Field Notes.
-                </p>
-              )}
+              </motion.button>
+              <AnimatePresence>
+                {subscribed && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: EASE_OUT }}
+                    className="font-body text-[13px] leading-[20px] text-leopard-amber"
+                  >
+                    Subscribed to Yala Field Notes.
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </form>
           </div>
         </div>
