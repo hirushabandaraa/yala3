@@ -391,7 +391,7 @@ export function LandingView({
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {SAFARI_PACKAGES.map((pkg, idx) => {
               const isFeatured = Boolean(pkg.featuredTag);
               return (
@@ -402,7 +402,7 @@ export function LandingView({
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ duration: 0.45, delay: idx * 0.08, ease: EASE_OUT }}
                   whileHover={{ y: -4 }}
-                  className={`h-full bg-sand-elevated text-on-sand-elevated rounded-lg overflow-hidden flex flex-col justify-between transition-shadow duration-200 hover:shadow-xl ${
+                  className={`bg-sand-elevated text-on-sand-elevated rounded-lg overflow-hidden flex flex-col justify-between transition-shadow duration-200 hover:shadow-xl ${
                     isFeatured
                       ? 'border-2 border-leopard-amber'
                       : 'border border-sand-muted'

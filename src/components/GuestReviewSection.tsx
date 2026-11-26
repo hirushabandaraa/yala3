@@ -104,12 +104,11 @@ export function GuestReviewSection() {
           </motion.div>
 
           {/* Review Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <AnimatePresence initial={false}>
               {reviews.map((review, idx) => (
                 <motion.article
                   key={review.id}
-                  layout
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
@@ -119,7 +118,7 @@ export function GuestReviewSection() {
                     ease: EASE_OUT,
                   }}
                   whileHover={{ y: -3 }}
-                  className="h-full bg-sand-elevated text-on-sand-elevated rounded-lg border border-sand-muted p-6 flex flex-col justify-between gap-4 transition-shadow duration-200 hover:shadow-lg"
+                  className="bg-sand-elevated text-on-sand-elevated rounded-lg border border-sand-muted p-6 flex flex-col justify-between gap-4 transition-shadow duration-200 hover:shadow-lg"
                 >
                   <div className="flex flex-col gap-4">
                     <div
