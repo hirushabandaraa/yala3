@@ -64,6 +64,7 @@ export interface Testimonial {
   author: string;
   country: string;
   packageName: string;
+  rating: number;
 }
 
 export const OWNER_WHATSAPP_NUMBER = '94740361590';
@@ -381,6 +382,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: 'Clara & Oliver Vance',
     country: 'United Kingdom',
     packageName: 'Full-Day Tracker',
+    rating: 5,
   },
   {
     id: 'meier',
@@ -389,6 +391,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: 'Lukas Meier',
     country: 'Switzerland',
     packageName: 'Morning Safari',
+    rating: 5,
   },
   {
     id: 'reid',
@@ -397,5 +400,6 @@ export const TESTIMONIALS: Testimonial[] = [
     author: 'Hannah & Liam Reid',
     country: 'Australia',
     packageName: 'Sunset Drive',
+    rating: 5,
   },
 ];

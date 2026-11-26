@@ -9,7 +9,6 @@ import {
   Camera,
   Leaf,
   Car,
-  Star,
   ChevronDown,
 } from 'lucide-react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, animate } from 'motion/react';
@@ -19,11 +18,11 @@ import {
   JEEP_COLLAGE_GEAR_IMAGE,
   SAFARI_PACKAGES,
   WILDLIFE_SPECIES,
-  TESTIMONIALS,
   SafariPackage,
   WildlifeSpecies,
 } from '../data/safariData';
 import { ResilientImage } from './ResilientImage';
+import { GuestReviewSection } from './GuestReviewSection';
 
 export interface QuickSearchPayload {
   date: string;
@@ -669,70 +668,8 @@ export function LandingView({
         </div>
       </section>
 
-      {/* 6. Traveler Testimonials (Solid Sand Muted Band) */}
-      <section className="bg-sand-muted text-on-warm-sand py-12 md:py-24 border-t border-sand-muted">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, ease: EASE_OUT }}
-            className="flex flex-col gap-2 mb-8 max-w-2xl"
-          >
-            <span className="font-label text-[12px] leading-[16px] font-semibold text-sage-green uppercase tracking-widest">
-              Guest Stories
-            </span>
-            <h2 className="font-display text-[30px] leading-[36px] md:text-[48px] md:leading-[56px] tracking-[-0.5px] font-semibold text-on-warm-sand text-balance">
-              Memories from the Bush
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {TESTIMONIALS.map((review, idx) => (
-              <motion.article
-                key={review.id}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.45, delay: idx * 0.08, ease: EASE_OUT }}
-                whileHover={{ y: -3 }}
-                className="h-full bg-sand-elevated text-on-sand-elevated rounded-lg border border-sand-muted p-6 flex flex-col justify-between gap-4 transition-shadow duration-200 hover:shadow-lg"
-              >
-                <div className="flex flex-col gap-4">
-                  <div
-                    className="flex items-center gap-1 text-leopard-amber"
-                    aria-label="5 out of 5 stars"
-                  >
-                    {[0, 1, 2, 3, 4].map((starIdx) => (
-                      <Star
-                        key={starIdx}
-                        className="w-4 h-4 fill-leopard-amber text-leopard-amber"
-                        aria-hidden="true"
-                      />
-                    ))}
-                  </div>
-                  <p className="font-body text-[15px] leading-[24px] text-on-sand-elevated text-pretty">
-                    {review.quote}
-                  </p>
-                </div>
-                <header className="pt-2 border-t border-sand-muted flex items-center justify-between gap-2">
-                  <div>
-                    <h3 className="font-title text-[17px] leading-[24px] font-semibold text-on-sand-elevated">
-                      {review.author}
-                    </h3>
-                    <p className="font-body text-[13px] leading-[20px] text-text-muted-light">
-                      {review.country}
-                    </p>
-                  </div>
-                  <span className="font-label text-[11px] leading-[16px] tracking-[0.5px] font-medium text-sage-green uppercase whitespace-nowrap shrink-0">
-                    {review.packageName}
-                  </span>
-                </header>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 6. Traveler Testimonials & Interactive Review Box */}
+      <GuestReviewSection />
     </>
   );
 }
