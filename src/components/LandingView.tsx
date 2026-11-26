@@ -12,7 +12,7 @@ import {
   Star,
   ChevronDown,
 } from 'lucide-react';
-import { motion, AnimatePresence, useInView, animate } from 'motion/react';
+import { motion, AnimatePresence, useInView, useScroll, useTransform, animate } from 'motion/react';
 import {
   HERO_IMAGE,
   JEEP_COLLAGE_MAIN_IMAGE,
@@ -76,6 +76,14 @@ export function LandingView({
   const [safariTime, setSafariTime] = useState<'Morning' | 'Evening' | 'Full Day'>('Morning');
   const [guests, setGuests] = useState('2 Guests');
   const [availabilityResult, setAvailabilityResult] = useState<QuickSearchPayload | null>(null);
+  const heroRef = useRef<HTMLElement | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroParallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
+  const heroParallaxScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
 
   const mapTimeToPackageId = (time: 'Morning' | 'Evening' | 'Full Day'): SafariPackage['id'] => {
     if (time === 'Full Day') return 'full-day';
@@ -97,24 +105,46 @@ export function LandingView({
     <>
       {/* 2. Hero Section */}
       <section
+        ref={heroRef}
         id="safaris"
         className="relative min-h-[760px] lg:min-h-[840px] flex flex-col justify-between bg-jungle-charcoal overflow-hidden"
       >
         <motion.div
-          initial={{ scale: 1.07, opacity: 0.8 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.4, ease: EASE_OUT }}
-          className="absolute inset-0"
+          style={{ y: heroParallaxY, scale: heroParallaxScale }}
+          className="absolute inset-0 will-change-transform"
         >
-          <ResilientImage
-            src={HERO_IMAGE}
-            alt="Sri Lankan leopard resting on a granite boulder in golden hour light at Yala National Park"
-            fallbackLabel="Yala National Park · Golden Hour"
-            className="w-full h-full object-cover object-center"
-          />
+          <motion.div
+            initial={{ scale: 1.08, opacity: 0.78 }}
+            animate={{
+              scale: [1.03, 1.1, 1.05, 1.03],
+              x: ['0%', '-1.5%', '1%', '0%'],
+              y: ['0%', '-1%', '0.8%', '0%'],
+              opacity: 1,
+            }}
+            transition={{
+              opacity: { duration: 1.2, ease: EASE_OUT },
+              scale: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
+              x: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
+              y: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
+            }}
+            className="w-full h-full will-change-transform"
+          >
+            <ResilientImage
+              src={HERO_IMAGE}
+              alt="Sri Lankan leopard resting on a granite boulder in golden hour light at Yala National Park"
+              fallbackLabel="Yala National Park · Golden Hour"
+              className="w-full h-full object-cover object-center"
+            />
+          </motion.div>
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-r from-jungle-charcoal/90 via-jungle-charcoal/55 to-jungle-charcoal/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-jungle-charcoal via-transparent to-jungle-charcoal/50" />
+        <motion.div
+          aria-hidden="true"
+          animate={{ opacity: [0.15, 0.32, 0.15] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 bg-gradient-to-tr from-transparent via-leopard-amber/10 to-leopard-amber/20 pointer-events-none"
+        />
 
         {/* Hero Copy */}
         <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-8 pt-36 md:pt-44 pb-8 flex-1 flex flex-col justify-center">

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -9,7 +10,7 @@ import {
   Info,
   MessageCircle,
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { SAFARI_PACKAGES, SafariPackage } from '../data/safariData';
 import { ResilientImage } from './ResilientImage';
 
@@ -30,23 +31,46 @@ export function PackageDetailView({
   onOpenBooking,
   onOpenWhatsAppConcierge,
 }: PackageDetailViewProps) {
+  const heroRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const detailParallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '16%']);
+
   return (
     <>
       {/* Package Hero Banner */}
-      <section className="relative min-h-[480px] flex flex-col justify-end bg-jungle-charcoal overflow-hidden">
+      <section
+        ref={heroRef}
+        className="relative min-h-[480px] flex flex-col justify-end bg-jungle-charcoal overflow-hidden"
+      >
         <motion.div
-          key={selectedPackage.id}
-          initial={{ scale: 1.06, opacity: 0.75 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="absolute inset-0"
+          style={{ y: detailParallaxY }}
+          className="absolute inset-0 will-change-transform"
         >
-          <ResilientImage
-            src={selectedPackage.heroImage}
-            alt={selectedPackage.heroImageAlt}
-            fallbackLabel={selectedPackage.title}
-            className="w-full h-full object-cover object-center"
-          />
+          <motion.div
+            key={selectedPackage.id}
+            initial={{ scale: 1.07, opacity: 0.75 }}
+            animate={{
+              scale: [1.03, 1.09, 1.04, 1.03],
+              x: ['0%', '-1.2%', '0.8%', '0%'],
+              opacity: 1,
+            }}
+            transition={{
+              opacity: { duration: 0.9, ease: EASE_OUT },
+              scale: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
+              x: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
+            }}
+            className="w-full h-full will-change-transform"
+          >
+            <ResilientImage
+              src={selectedPackage.heroImage}
+              alt={selectedPackage.heroImageAlt}
+              fallbackLabel={selectedPackage.title}
+              className="w-full h-full object-cover object-center"
+            />
+          </motion.div>
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-r from-jungle-charcoal/95 via-jungle-charcoal/70 to-jungle-charcoal/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-jungle-charcoal via-transparent to-jungle-charcoal/50" />
