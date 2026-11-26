@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, animate } from 'motion/react';
 import {
-  HERO_IMAGE,
+  HERO_SLIDES,
   JEEP_COLLAGE_MAIN_IMAGE,
   JEEP_COLLAGE_GEAR_IMAGE,
   SAFARI_PACKAGES,
@@ -76,7 +76,15 @@ export function LandingView({
   const [safariTime, setSafariTime] = useState<'Morning' | 'Evening' | 'Full Day'>('Morning');
   const [guests, setGuests] = useState('2 Guests');
   const [availabilityResult, setAvailabilityResult] = useState<QuickSearchPayload | null>(null);
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const heroRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -113,29 +121,38 @@ export function LandingView({
           style={{ y: heroParallaxY, scale: heroParallaxScale }}
           className="absolute inset-0 will-change-transform"
         >
-          <motion.div
-            initial={{ scale: 1.08, opacity: 0.78 }}
-            animate={{
-              scale: [1.03, 1.1, 1.05, 1.03],
-              x: ['0%', '-1.5%', '1%', '0%'],
-              y: ['0%', '-1%', '0.8%', '0%'],
-              opacity: 1,
-            }}
-            transition={{
-              opacity: { duration: 1.2, ease: EASE_OUT },
-              scale: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
-              x: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
-              y: { duration: 22, repeat: Infinity, ease: 'easeInOut' },
-            }}
-            className="w-full h-full will-change-transform"
-          >
-            <ResilientImage
-              src={HERO_IMAGE}
-              alt="Sri Lankan leopard resting on a granite boulder in golden hour light at Yala National Park"
-              fallbackLabel="Yala National Park · Golden Hour"
-              className="w-full h-full object-cover object-center"
-            />
-          </motion.div>
+          <AnimatePresence mode="sync">
+            {HERO_SLIDES.map((slide, index) => {
+              if (index !== activeHeroIndex) return null;
+              return (
+                <motion.div
+                  key={slide.src}
+                  initial={{ opacity: 0, scale: 1.09, x: '0%', y: '0%' }}
+                  animate={{
+                    opacity: 1,
+                    scale: [1.03, 1.09, 1.04],
+                    x: ['0%', '-1.4%', '0.8%'],
+                    y: ['0%', '-0.8%', '0.5%'],
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    opacity: { duration: 1.3, ease: EASE_OUT },
+                    scale: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
+                    x: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
+                    y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
+                  }}
+                  className="absolute inset-0 will-change-transform"
+                >
+                  <ResilientImage
+                    src={slide.src}
+                    alt={slide.alt}
+                    fallbackLabel="Yala National Park · Golden Hour"
+                    className={`w-full h-full object-cover ${slide.objectPositionClass}`}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-r from-jungle-charcoal/90 via-jungle-charcoal/55 to-jungle-charcoal/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-jungle-charcoal via-transparent to-jungle-charcoal/50" />
@@ -173,6 +190,32 @@ export function LandingView({
             >
               Private luxury jeep safaris, expert naturalists, and unforgettable wildlife encounters in Sri Lanka&apos;s premier leopard sanctuary.
             </motion.p>
+
+            {/* Minimal Header Photo Slideshow Controls */}
+            <div className="flex items-center gap-2 pt-1" role="tablist" aria-label="Hero leopard photography">
+              {HERO_SLIDES.map((slide, idx) => {
+                const isActive = idx === activeHeroIndex;
+                return (
+                  <button
+                    key={slide.src}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-label={`View header photo ${idx + 1}`}
+                    onClick={() => setActiveHeroIndex(idx)}
+                    className="group py-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leopard-amber rounded"
+                  >
+                    <span
+                      className={`block h-1 rounded-full transition-all duration-300 ${
+                        isActive
+                          ? 'w-10 bg-leopard-amber'
+                          : 'w-5 bg-warm-sand/35 group-hover:bg-warm-sand/70'
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

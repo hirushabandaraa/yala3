@@ -73,7 +73,31 @@ export function buildWhatsAppUrl(message: string): string {
   return `https://wa.me/${OWNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
+export interface HeroSlide {
+  src: string;
+  alt: string;
+  objectPositionClass: string;
+}
+
 export const HERO_IMAGE = heroLeopardRock;
+
+export const HERO_SLIDES: HeroSlide[] = [
+  {
+    src: heroLeopardRock,
+    alt: 'Sri Lankan leopard resting on a granite boulder in golden hour light at Yala National Park',
+    objectPositionClass: 'object-center',
+  },
+  {
+    src: '/assets/aistudio/images_10ff21aa.jpeg',
+    alt: 'Sri Lankan leopard resting across a mossy fallen branch in Yala National Park',
+    objectPositionClass: 'object-center',
+  },
+  {
+    src: '/assets/aistudio/images-3_396de6bf.jpeg',
+    alt: 'Close-up portrait of a wild Sri Lankan leopard gazing through Yala bushland',
+    objectPositionClass: 'object-[center_24%]',
+  },
+];
 
 export const JEEP_COLLAGE_MAIN_IMAGE = jeepCollageMain;
 
