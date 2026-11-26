@@ -182,11 +182,9 @@ export function Footer({
                 </svg>
               </a>
               <a
-                href="#footer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onOpenWhatsAppConcierge();
-                }}
+                href="https://www.youtube.com/@HirushaBandara-wt7eu"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="YouTube"
                 className="text-text-muted-dark hover:text-leopard-amber transition-colors duration-150"
               >
