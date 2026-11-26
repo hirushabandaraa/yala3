@@ -6,7 +6,7 @@ import {
   WildlifeSpecies,
 } from './data/safariData';
 import { Navbar } from './components/Navbar';
-import { LandingView, QuickSearchPayload } from './components/LandingView';
+import { LandingView } from './components/LandingView';
 import { PackageDetailView } from './components/PackageDetailView';
 import { PackagesOverviewView } from './components/PackagesOverviewView';
 import { Footer } from './components/Footer';
@@ -59,7 +59,7 @@ export default function App() {
   }, []);
 
   const handleOpenBookingFromSearch = useCallback(
-    (prefill?: Partial<QuickSearchPayload>) => {
+    (prefill?: Partial<BookingModalPrefill>) => {
       const pkgId = prefill?.packageId || 'full-day';
       const pkg = SAFARI_PACKAGES.find((p) => p.id === pkgId);
       setBookingPrefill({
@@ -113,7 +113,7 @@ export default function App() {
                 <LandingView
                   onSelectPackageDetail={handleOpenPackageDetail}
                   onOpenBooking={handleOpenBookingFromSearch}
-                  onOpenWhatsAppConcierge={handleOpenWhatsApp}
+                  onOpenBookSafari={handleOpenPackagesOverview}
                   onSelectWildlife={setSelectedWildlife}
                 />
               </motion.div>

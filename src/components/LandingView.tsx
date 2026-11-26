@@ -1,15 +1,11 @@
-import { useState, useEffect, useRef, FormEvent } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
-  Calendar,
-  Clock,
-  Users,
   ArrowRight,
   CheckCircle2,
   BadgeCheck,
   Camera,
   Leaf,
   Car,
-  ChevronDown,
 } from 'lucide-react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, animate } from 'motion/react';
 import {
@@ -23,22 +19,17 @@ import {
 } from '../data/safariData';
 import { ResilientImage } from './ResilientImage';
 import { GuestReviewSection } from './GuestReviewSection';
-
-export interface QuickSearchPayload {
-  date: string;
-  timeOption: 'Morning' | 'Evening' | 'Full Day';
-  guests: string;
-  packageId: SafariPackage['id'];
-}
+import type { BookingModalPrefill } from './BookingModal';
 
 interface LandingViewProps {
   onSelectPackageDetail: (pkgId: SafariPackage['id']) => void;
-  onOpenBooking: (prefill?: Partial<QuickSearchPayload>) => void;
-  onOpenWhatsAppConcierge: (prefillMessage?: string) => void;
+  onOpenBooking: (prefill?: Partial<BookingModalPrefill>) => void;
+  onOpenBookSafari: () => void;
   onSelectWildlife: (species: WildlifeSpecies) => void;
 }
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const HERO_HEADLINE_WORDS = ['Track', 'the', 'Untamed', 'Spirit', 'of', 'Yala.'] as const;
 
 function AnimatedSightingStat() {
   const ref = useRef<HTMLSpanElement | null>(null);
@@ -68,13 +59,9 @@ function AnimatedSightingStat() {
 export function LandingView({
   onSelectPackageDetail,
   onOpenBooking,
-  onOpenWhatsAppConcierge,
+  onOpenBookSafari,
   onSelectWildlife,
 }: LandingViewProps) {
-  const [date, setDate] = useState('2026-12-14');
-  const [safariTime, setSafariTime] = useState<'Morning' | 'Evening' | 'Full Day'>('Morning');
-  const [guests, setGuests] = useState('2 Guests');
-  const [availabilityResult, setAvailabilityResult] = useState<QuickSearchPayload | null>(null);
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const heroRef = useRef<HTMLElement | null>(null);
 
@@ -91,22 +78,6 @@ export function LandingView({
   });
   const heroParallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
   const heroParallaxScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
-
-  const mapTimeToPackageId = (time: 'Morning' | 'Evening' | 'Full Day'): SafariPackage['id'] => {
-    if (time === 'Full Day') return 'full-day';
-    if (time === 'Evening') return 'sunset';
-    return 'morning';
-  };
-
-  const handleAvailabilitySubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setAvailabilityResult({
-      date: date || '2026-12-14',
-      timeOption: safariTime,
-      guests,
-      packageId: mapTimeToPackageId(safariTime),
-    });
-  };
 
   return (
     <>
@@ -163,7 +134,7 @@ export function LandingView({
         />
 
         {/* Hero Copy */}
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-8 pt-36 md:pt-44 pb-8 flex-1 flex flex-col justify-center">
+        <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-8 pt-36 md:pt-44 pb-16 md:pb-24 flex-1 flex flex-col justify-center">
           <div className="max-w-2xl flex flex-col gap-6">
             <motion.span
               initial={{ opacity: 0, y: 12 }}
@@ -171,15 +142,41 @@ export function LandingView({
               transition={{ duration: 0.45, delay: 0.08, ease: EASE_OUT }}
               className="inline-flex w-fit items-center gap-2 px-3.5 py-1.5 rounded-full bg-jungle-charcoal/75 border border-sage-green/60 text-warm-sand font-label text-[12px] leading-[16px] font-semibold uppercase tracking-widest"
             >
-              Yala National Park · Block 1 &amp; Block 5
+              Yala National Park
             </motion.span>
             <motion.h1
+              aria-label="Track the Untamed Spirit of Yala."
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.16, ease: EASE_OUT }}
               className="font-display text-[32px] leading-[38px] tracking-[-0.5px] md:text-[64px] md:leading-[72px] md:tracking-[-1px] font-bold text-on-jungle-charcoal text-balance"
             >
-              Track the Untamed Spirit of Yala.
+              {HERO_HEADLINE_WORDS.map((word, idx) => {
+                const isAccentWord = word === 'Untamed' || word === 'Yala.';
+                return (
+                  <span key={word} aria-hidden="true" className="inline-block mr-[0.26em] last:mr-0">
+                    <motion.span
+                      className="inline-block will-change-transform"
+                      animate={{
+                        y: [0, -3.5, 0],
+                        opacity: [0.9, 1, 0.9],
+                        color: isAccentWord
+                          ? ['#F7F5F0', '#D99B26', '#F7F5F0']
+                          : ['#F7F5F0', '#FFEEDA', '#F7F5F0'],
+                      }}
+                      transition={{
+                        duration: 3.8,
+                        delay: idx * 0.18,
+                        repeat: Infinity,
+                        repeatDelay: 1.4,
+                        ease: 'easeInOut',
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  </span>
+                );
+              })}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -189,6 +186,29 @@ export function LandingView({
             >
               Private luxury jeep safaris, expert naturalists, and unforgettable wildlife encounters in Sri Lanka&apos;s premier leopard sanctuary.
             </motion.p>
+
+            {/* Primary Hero Book Safari CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: EASE_OUT }}
+              className="pt-1"
+            >
+              <motion.button
+                type="button"
+                onClick={onOpenBookSafari}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15, ease: EASE_OUT }}
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded bg-leopard-amber text-on-leopard-amber font-label text-[14px] leading-[20px] tracking-[0.2px] font-semibold hover:bg-amber-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leopard-amber transition-colors duration-150 ease-out whitespace-nowrap cursor-pointer shadow-lg group"
+              >
+                <span>View Packages &amp; Book Safari</span>
+                <ArrowRight
+                  className="w-4 h-4 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </motion.button>
+            </motion.div>
 
             {/* Minimal Header Photo Slideshow Controls */}
             <div className="flex items-center gap-2 pt-1" role="tablist" aria-label="Hero leopard photography">
@@ -218,154 +238,6 @@ export function LandingView({
           </div>
         </div>
 
-        {/* Floating Horizontal Glassmorphism Booking Widget */}
-        <motion.div
-          id="booking-widget"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.32, ease: EASE_OUT }}
-          className="relative z-20 max-w-7xl w-full mx-auto px-6 md:px-8 pb-8 md:pb-12"
-        >
-          <form
-            onSubmit={handleAvailabilitySubmit}
-            className="rounded-lg bg-jungle-charcoal/75 backdrop-blur-md border border-warm-sand/15 p-4 md:p-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
-          >
-            {/* Date Field */}
-            <label className="flex flex-col gap-1">
-              <span className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-text-muted-dark uppercase">
-                Date
-              </span>
-              <div className="relative flex items-center">
-                <Calendar
-                  className="w-4 h-4 absolute left-3 text-leopard-amber pointer-events-none"
-                  aria-hidden="true"
-                />
-                <input
-                  type="date"
-                  name="safari-date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  required
-                  className="input-dark-scheme w-full rounded bg-charcoal-elevated/90 border border-charcoal-muted pl-10 pr-3 py-3 text-[15px] leading-[24px] text-on-charcoal-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none transition-colors duration-150 ease-out"
-                />
-              </div>
-            </label>
-
-            {/* Safari Time Field */}
-            <label className="flex flex-col gap-1">
-              <span className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-text-muted-dark uppercase">
-                Safari Time
-              </span>
-              <div className="relative flex items-center">
-                <Clock
-                  className="w-4 h-4 absolute left-3 text-leopard-amber pointer-events-none"
-                  aria-hidden="true"
-                />
-                <select
-                  name="safari-time"
-                  value={safariTime}
-                  onChange={(e) =>
-                    setSafariTime(e.target.value as 'Morning' | 'Evening' | 'Full Day')
-                  }
-                  className="w-full appearance-none rounded bg-charcoal-elevated/90 border border-charcoal-muted pl-10 pr-9 py-3 text-[15px] leading-[24px] text-on-charcoal-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none transition-colors duration-150 ease-out cursor-pointer"
-                >
-                  <option value="Morning">Morning (5:30 AM – 9:30 AM)</option>
-                  <option value="Evening">Evening (2:30 PM – 6:30 PM)</option>
-                  <option value="Full Day">Full Day (5:30 AM – 6:00 PM)</option>
-                </select>
-                <ChevronDown
-                  className="w-4 h-4 absolute right-3 text-text-muted-dark pointer-events-none"
-                  aria-hidden="true"
-                />
-              </div>
-            </label>
-
-            {/* Guests Field */}
-            <label className="flex flex-col gap-1">
-              <span className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-text-muted-dark uppercase">
-                Guests
-              </span>
-              <div className="relative flex items-center">
-                <Users
-                  className="w-4 h-4 absolute left-3 text-leopard-amber pointer-events-none"
-                  aria-hidden="true"
-                />
-                <select
-                  name="safari-guests"
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="w-full appearance-none rounded bg-charcoal-elevated/90 border border-charcoal-muted pl-10 pr-9 py-3 text-[15px] leading-[24px] text-on-charcoal-elevated focus:border-leopard-amber focus:ring-1 focus:ring-leopard-amber focus:outline-none transition-colors duration-150 ease-out cursor-pointer"
-                >
-                  <option value="2 Guests">2 Guests (Private Jeep)</option>
-                  <option value="1 Guest">1 Guest (Solo Tracker)</option>
-                  <option value="3 Guests">3 Guests (Private Jeep)</option>
-                  <option value="4 Guests">4 Guests (Private Jeep)</option>
-                  <option value="5-6 Guests">5–6 Guests (Extended 4x4)</option>
-                </select>
-                <ChevronDown
-                  className="w-4 h-4 absolute right-3 text-text-muted-dark pointer-events-none"
-                  aria-hidden="true"
-                />
-              </div>
-            </label>
-
-            {/* Check Availability CTA */}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.015 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.15, ease: EASE_OUT }}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded bg-leopard-amber text-on-leopard-amber font-label text-[14px] leading-[20px] tracking-[0.2px] font-semibold hover:bg-amber-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leopard-amber transition-colors duration-150 ease-out whitespace-nowrap cursor-pointer"
-            >
-              <span>Check Availability</span>
-              <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
-            </motion.button>
-          </form>
-
-          {/* Live Availability Confirmation Banner */}
-          <AnimatePresence>
-            {availabilityResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.22, ease: EASE_OUT }}
-                className="mt-2 rounded bg-charcoal-elevated/95 border border-sage-green px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-              >
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-leopard-amber shrink-0" aria-hidden="true" />
-                  <p className="font-body text-[13px] leading-[20px] text-on-charcoal-elevated">
-                    Private 4x4 available on{' '}
-                    <span className="font-semibold tabular-nums">{availabilityResult.date}</span>{' '}
-                    for {availabilityResult.timeOption} ({availabilityResult.guests}).
-                  </p>
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                  <motion.button
-                    type="button"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => onOpenBooking(availabilityResult)}
-                    className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold px-3 py-1.5 rounded bg-leopard-amber text-on-leopard-amber hover:bg-amber-hover transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Reserve Now
-                  </motion.button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onOpenWhatsAppConcierge(
-                        `Hello Leapordsee Yala, I would like to confirm availability for ${availabilityResult.date} (${availabilityResult.timeOption}, ${availabilityResult.guests}).`
-                      )
-                    }
-                    className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-leopard-amber hover:underline whitespace-nowrap cursor-pointer"
-                  >
-                    Confirm via WhatsApp
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
       </section>
 
       {/* 3. Safari Packages Section (Warm Sand #F7F5F0) */}
