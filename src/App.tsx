@@ -67,6 +67,9 @@ export default function App() {
         date: prefill?.date,
         guests: prefill?.guests,
         departureTime: pkg?.defaultDeparture,
+        charterType: prefill?.charterType,
+        tierLabel: prefill?.tierLabel,
+        sharingPrice: prefill?.sharingPrice,
       });
       setBookingModalOpen(true);
     },
@@ -127,8 +130,7 @@ export default function App() {
               >
                 <PackagesOverviewView
                   onBackHome={() => scrollToSection('safaris')}
-                  onOpenBooking={handleOpenBookingForPackage}
-                  onSelectPackageDetail={handleOpenPackageDetail}
+                  onOpenBooking={handleOpenBookingFromSearch}
                 />
               </motion.div>
             ) : (

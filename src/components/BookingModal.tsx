@@ -15,6 +15,9 @@ export interface BookingModalPrefill {
   date?: string;
   guests?: string;
   departureTime?: '5:30 AM (Full Day / Morning)' | '2:30 PM (Sunset & Dusk)';
+  charterType?: 'Private Safari' | 'Sharing Safari';
+  tierLabel?: string;
+  sharingPrice?: number;
 }
 
 interface BookingModalProps {
@@ -25,8 +28,19 @@ interface BookingModalProps {
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
+const SHARING_RATE_BY_PACKAGE: Record<SafariPackage['id'], number> = {
+  morning: 53,
+  sunset: 58,
+  'full-day': 69,
+};
+
 export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
   const [packageId, setPackageId] = useState<SafariPackage['id']>('full-day');
+  const [charterType, setCharterType] = useState<'Private Safari' | 'Sharing Safari'>(
+    'Private Safari'
+  );
+  const [customTierLabel, setCustomTierLabel] = useState<string | undefined>(undefined);
+  const [customSharingPrice, setCustomSharingPrice] = useState<number | undefined>(undefined);
   const [date, setDate] = useState('2026-12-14');
   const [departureTime, setDepartureTime] = useState(
     '5:30 AM (Full Day / Morning)'
@@ -54,6 +68,9 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
     setPackageId(targetPkgId);
     const pkg = SAFARI_PACKAGES.find((p) => p.id === targetPkgId) || SAFARI_PACKAGES[1];
     setDepartureTime(prefill?.departureTime || pkg.defaultDeparture);
+    setCharterType(prefill?.charterType || 'Private Safari');
+    setCustomTierLabel(prefill?.tierLabel);
+    setCustomSharingPrice(prefill?.sharingPrice);
     if (prefill?.date) {
       setDate(prefill.date);
     }
@@ -84,8 +101,16 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
   const activePackage =
     SAFARI_PACKAGES.find((p) => p.id === packageId) || SAFARI_PACKAGES[1];
 
+  const displayPackageTitle = customTierLabel || activePackage.title;
+  const displayPrice =
+    charterType === 'Sharing Safari'
+      ? customSharingPrice ?? SHARING_RATE_BY_PACKAGE[activePackage.id]
+      : activePackage.price;
+
   const handlePackageChange = (newId: SafariPackage['id']) => {
     setPackageId(newId);
+    setCustomTierLabel(undefined);
+    setCustomSharingPrice(undefined);
     const pkg = SAFARI_PACKAGES.find((p) => p.id === newId);
     if (pkg) {
       setDepartureTime(pkg.defaultDeparture);
@@ -101,10 +126,16 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
     if (gimbalMount) preferences.push('Gimbal & Beanbag Camera Mount');
     if (vegetarianPicnic) preferences.push('Vegetarian Bush Picnic Menu');
 
+    const rateLabel =
+      charterType === 'Sharing Safari'
+        ? `Starts from $${displayPrice} / guest`
+        : `$${displayPrice} Private Jeep`;
+
     const messageText = [
       `*New Safari Booking Request — Leapordsee Yala*`,
       `Booking Ref: ${ref}`,
-      `Package: ${activePackage.title} ($${activePackage.price})`,
+      `Charter Type: ${charterType}`,
+      `Package: ${displayPackageTitle} (${rateLabel})`,
       `Date: ${date}`,
       `Departure: ${departureTime}`,
       `Guests: ${guests}`,
@@ -187,7 +218,7 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
             <header className="bg-jungle-charcoal text-on-jungle-charcoal px-6 py-6 flex items-center justify-between gap-4">
               <div className="flex flex-col gap-1">
                 <span className="font-label text-[12px] leading-[16px] font-semibold text-leopard-amber uppercase tracking-widest">
-                  Private Jeep Charter
+                  {charterType === 'Sharing Safari' ? 'Sharing 4x4 Seat' : 'Private Jeep Charter'}
                 </span>
                 <h2
                   id="safari-modal-heading"
@@ -210,6 +241,32 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
 
             {/* Modal Form Body */}
             <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-6">
+              {/* Safari Charter Type */}
+              <div className="flex flex-col gap-1.5">
+                <span className="font-label text-[12px] leading-[16px] tracking-[0.6px] font-semibold text-text-muted-light uppercase">
+                  Safari Charter Type
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  {(['Private Safari', 'Sharing Safari'] as const).map((option) => {
+                    const selected = charterType === option;
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setCharterType(option)}
+                        className={`px-4 py-2.5 rounded font-label text-[13px] leading-[20px] font-semibold transition-colors duration-150 cursor-pointer border ${
+                          selected
+                            ? 'bg-leopard-amber text-on-leopard-amber border-leopard-amber'
+                            : 'bg-sand-elevated text-on-sand-elevated border-sand-muted hover:border-leopard-amber'
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Package & Date */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className="flex flex-col gap-1">
@@ -383,20 +440,24 @@ export function BookingModal({ isOpen, prefill, onClose }: BookingModalProps) {
               <div className="rounded-lg bg-sand-muted p-4 flex items-center justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="font-title text-[17px] leading-[24px] font-semibold text-on-warm-sand">
-                    Total Private Jeep Charter
+                    {charterType === 'Sharing Safari'
+                      ? `${displayPackageTitle} · Sharing Seat`
+                      : `Total Private Jeep Charter`}
                   </span>
                   <span className="font-body text-[13px] leading-[20px] text-text-muted-light">
-                    No prepayment required today · Free 48h cancellation
+                    {charterType === 'Sharing Safari'
+                      ? 'Per-guest starting rate · Free 48h cancellation'
+                      : 'No prepayment required today · Free 48h cancellation'}
                   </span>
                 </div>
                 <motion.span
-                  key={activePackage.price}
+                  key={`${charterType}-${displayPrice}`}
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.18, ease: EASE_OUT }}
-                  className="font-headline text-[36px] leading-[44px] font-semibold text-on-warm-sand tabular-nums"
+                  className="font-headline text-[36px] leading-[44px] font-semibold text-on-warm-sand tabular-nums shrink-0"
                 >
-                  ${activePackage.price}
+                  ${displayPrice}
                 </motion.span>
               </div>
 

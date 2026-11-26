@@ -106,6 +106,8 @@ export const JEEP_COLLAGE_GEAR_IMAGE = jeepCollageGear;
 
 export const MODAL_BACKDROP_IMAGE = pkgFulldayJeep;
 
+export const SLOTH_BEAR_IMAGE = wildlifeSlothBear;
+
 export const SAFARI_PACKAGES: SafariPackage[] = [
   {
     id: 'morning',

@@ -267,19 +267,43 @@ export function LandingView({
             {SAFARI_PACKAGES.map((pkg, idx) => {
               const isFeatured = Boolean(pkg.featuredTag);
               return (
-                <motion.article
+                <motion.div
                   key={pkg.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.15 }}
-                  transition={{ duration: 0.45, delay: idx * 0.08, ease: EASE_OUT }}
-                  whileHover={{ y: -4 }}
-                  className={`bg-sand-elevated text-on-sand-elevated rounded-lg overflow-hidden flex flex-col justify-between transition-shadow duration-200 hover:shadow-xl ${
-                    isFeatured
-                      ? 'border-2 border-leopard-amber'
-                      : 'border border-sand-muted'
-                  }`}
+                  initial={{
+                    opacity: 0,
+                    y: 42,
+                    scale: 0.93,
+                    clipPath: 'inset(14% 0% 0% 0% round 8px)',
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    clipPath: 'inset(0% 0% 0% 0% round 8px)',
+                  }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.65, delay: idx * 0.12, ease: EASE_OUT }}
+                  className="flex"
                 >
+                  <motion.article
+                    animate={{
+                      y: [0, -5, 0],
+                    }}
+                    transition={{
+                      y: {
+                        duration: 4.4,
+                        delay: idx * 0.45,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      },
+                    }}
+                    whileHover={{ y: -8, transition: { duration: 0.2, ease: EASE_OUT } }}
+                    className={`flex-1 bg-sand-elevated text-on-sand-elevated rounded-lg overflow-hidden flex flex-col justify-between transition-shadow duration-200 hover:shadow-xl will-change-transform ${
+                      isFeatured
+                        ? 'border-2 border-leopard-amber'
+                        : 'border border-sand-muted'
+                    }`}
+                  >
                   <div>
                     <button
                       type="button"
@@ -358,7 +382,8 @@ export function LandingView({
                       />
                     </button>
                   </footer>
-                </motion.article>
+                  </motion.article>
+                </motion.div>
               );
             })}
           </div>
