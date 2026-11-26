@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/
 import { BrandMark, BrandWordmark } from './BrandMark';
 
 interface NavbarProps {
-  activeView: 'landing' | 'package-detail';
+  activeView: 'landing' | 'package-detail' | 'packages-overview';
   onNavigateSection: (sectionId: string) => void;
   onOpenBooking: () => void;
   onOpenContact: () => void;
@@ -40,13 +40,15 @@ export function Navbar({
     onOpenContact();
   };
 
+  const showSolidHeader = isScrolled || activeView === 'packages-overview';
+
   const navItems = [
     { id: 'safaris', label: 'Safaris', active: false, action: () => handleLinkClick('safaris') },
     { id: 'wildlife', label: 'Wildlife', active: false, action: () => handleLinkClick('wildlife') },
     {
       id: 'packages',
       label: 'Packages',
-      active: activeView === 'package-detail',
+      active: activeView === 'package-detail' || activeView === 'packages-overview',
       action: () => handleLinkClick('packages'),
     },
     { id: 'about', label: 'About Us', active: false, action: () => handleLinkClick('about') },
@@ -60,13 +62,13 @@ export function Navbar({
       transition={{ duration: 0.5, ease: EASE_OUT }}
       className="fixed top-0 inset-x-0 z-30"
     >
-      {/* Compositor-only animated backdrop when scrolled */}
+      {/* Compositor-only animated backdrop when scrolled or on light overview view */}
       <motion.div
         aria-hidden="true"
         initial={false}
-        animate={{ opacity: isScrolled ? 1 : 0 }}
+        animate={{ opacity: showSolidHeader ? 1 : 0 }}
         transition={{ duration: 0.25, ease: EASE_OUT }}
-        className="absolute inset-0 bg-jungle-charcoal/88 backdrop-blur-md border-b border-charcoal-muted/80 pointer-events-none"
+        className="absolute inset-0 bg-jungle-charcoal/92 backdrop-blur-md border-b border-charcoal-muted/80 pointer-events-none"
       />
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-5 flex items-center justify-between gap-8">

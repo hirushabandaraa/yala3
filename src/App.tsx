@@ -8,6 +8,7 @@ import {
 import { Navbar } from './components/Navbar';
 import { LandingView, QuickSearchPayload } from './components/LandingView';
 import { PackageDetailView } from './components/PackageDetailView';
+import { PackagesOverviewView } from './components/PackagesOverviewView';
 import { Footer } from './components/Footer';
 import { BookingModal, BookingModalPrefill } from './components/BookingModal';
 import { WildlifeModal } from './components/WildlifeModal';
@@ -17,7 +18,9 @@ import { ContactModal } from './components/ContactModal';
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
 export default function App() {
-  const [activeView, setActiveView] = useState<'landing' | 'package-detail'>('landing');
+  const [activeView, setActiveView] = useState<'landing' | 'package-detail' | 'packages-overview'>(
+    'landing'
+  );
   const [selectedPackageId, setSelectedPackageId] = useState<SafariPackage['id']>('full-day');
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -42,6 +45,11 @@ export default function App() {
         }
       }, 220);
     });
+  }, []);
+
+  const handleOpenPackagesOverview = useCallback(() => {
+    setActiveView('packages-overview');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleOpenPackageDetail = useCallback((pkgId: SafariPackage['id']) => {
@@ -88,11 +96,7 @@ export default function App() {
         <Navbar
           activeView={activeView}
           onNavigateSection={scrollToSection}
-          onOpenBooking={() =>
-            handleOpenBookingForPackage(
-              activeView === 'package-detail' ? selectedPackageId : 'full-day'
-            )
-          }
+          onOpenBooking={handleOpenPackagesOverview}
           onOpenContact={() => setContactOpen(true)}
         />
 
@@ -111,6 +115,20 @@ export default function App() {
                   onOpenBooking={handleOpenBookingFromSearch}
                   onOpenWhatsAppConcierge={handleOpenWhatsApp}
                   onSelectWildlife={setSelectedWildlife}
+                />
+              </motion.div>
+            ) : activeView === 'packages-overview' ? (
+              <motion.div
+                key="packages-overview-view"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: EASE_OUT }}
+              >
+                <PackagesOverviewView
+                  onBackHome={() => scrollToSection('safaris')}
+                  onOpenBooking={handleOpenBookingForPackage}
+                  onSelectPackageDetail={handleOpenPackageDetail}
                 />
               </motion.div>
             ) : (
