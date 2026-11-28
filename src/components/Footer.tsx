@@ -35,8 +35,8 @@ export function Footer({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-charcoal-muted">
           {/* Brand + Direct Contact & WhatsApp Booking */}
           <div className="md:col-span-4 flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <BrandMark className="w-7 h-7 text-leopard-amber shrink-0" />
+            <div className="flex items-center gap-2.5">
+              <BrandMark className="w-16 h-9 shrink-0" />
               <BrandWordmark className="font-headline text-[20px] leading-[28px] font-semibold text-on-jungle-charcoal" />
             </div>
             <p className="font-body text-[13px] leading-[20px] tracking-[0.1px] text-text-muted-dark max-w-xs text-pretty">

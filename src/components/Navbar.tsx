@@ -108,11 +108,11 @@ export function Navbar({
           className="inline-flex items-center gap-2 text-left text-on-jungle-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leopard-amber rounded whitespace-nowrap shrink-0 cursor-pointer group"
         >
           <motion.span
-            whileHover={{ rotate: -8 }}
+            whileHover={{ scale: 1.04 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
             className="inline-flex"
           >
-            <BrandMark className="w-8 h-8 text-leopard-amber shrink-0" />
+            <BrandMark className="w-[74px] h-10 shrink-0" />
           </motion.span>
           <BrandWordmark showSubtitle />
         </motion.button>
